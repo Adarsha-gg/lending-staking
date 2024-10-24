@@ -33,7 +33,7 @@ contract LenderTest is Test{
         vm.warp(12999999); //moving the time forward
         lender.withdraw(1000);
         IERC20 token = IERC20((lender.s_stakingToken).address);
-        console.log(token.balanceOf(msg.sender));
+        console.log(token.balanceOf(msg.sender)); //this doesnt work right now btw
     }
 
     function testAfterPause() public { //this test works for both staking and withdrawing
