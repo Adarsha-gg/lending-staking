@@ -52,7 +52,7 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
 /*I am also transfering rewards points here so that people do not lose 
 the rewards if they call withdraw first and then getReward. */
 
-    function withdraw(uint256 amount) public nonReentrant{
+    function withdraw(uint256 amount) public whenNotPaused nonReentrant{ //idk if we need the pause or no
         uint256 userBal = s_stakedBalance[msg.sender]; // doing this here to not call it multiple times
         require(userBal >= amount, "Insufficient balance");
         uint256 reward_points = calculateRewards(msg.sender);
@@ -63,6 +63,7 @@ the rewards if they call withdraw first and then getReward. */
         emit Withdrawn(msg.sender, amount);
     }
 
+    //idk how this function works need to check the math
     function calculateRewards(address person) public view returns(uint256){
         uint256 userBal = s_stakedBalance[person]; // doing this here to not call it multiple times
         uint256 timeSinceLastReward = block.timestamp - lastTime;
@@ -72,10 +73,7 @@ the rewards if they call withdraw first and then getReward. */
                               (365 days * 10000);
         if (rewardAmount < 1e16) return 0; // Minimum 0.01 tokens threshold
         rewardAmount = rewardAmount / 1e18;
-        if (rewardAmount > userBal) {
-            rewardAmount = userBal;
-        }
-        
+        if (rewardAmount > userBal) {rewardAmount = userBal;}
         return rewardAmount;   
     }
 
