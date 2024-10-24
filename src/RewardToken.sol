@@ -6,6 +6,6 @@ import {ERC20} from "@openzeppelin/token/ERC20/ERC20.sol";
 
 contract RewardToken is ERC20{
     constructor() ERC20("Staker", "stk") {
-        _mint(msg.sender, 100000000);
+        _mint(msg.sender, 1e18);
     }
 }
