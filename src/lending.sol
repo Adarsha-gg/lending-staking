@@ -3,69 +3,81 @@ pragma solidity ^0.8.0;
 
 
 import {IERC20} from "@openzeppelin/token/ERC20/IERC20.sol";
+import {ReentrancyGuard} from "@openzeppelin/utils/ReentrancyGuard.sol";
+import {Pausable} from "@openzeppelin/utils/Pausable.sol";
+import {Ownable} from "@openzeppelin/access/Ownable.sol";
 import {RewardToken} from "./RewardToken.sol";
 import {StakingToken} from "./StakingToken.sol";
 
-contract YieldFarming{
+contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
 
-    RewardToken public s_rewardingToken;
-    StakingToken public s_stakingToken;
+    RewardToken public immutable s_rewardingToken;
+    StakingToken public immutable s_stakingToken;
+    uint256 public immutable s_tokenPrice = 1000000 wei;
+    
     uint256 public lastTime;
-
-    address public owner;
-    uint256 public immutable token_price = 1000000 wei;
     uint256 public s_rewardRate = 2;
     bool public isPaused = false;
     
     mapping(address => uint256) public s_stakedBalance;
     mapping(address => uint256) public s_totalRewards;
-    address[] public stakers;
+    address[] public s_stakers;
 
-    constructor(){
-        owner = msg.sender;
+    
+    event Staked(address staker, uint256 amount);
+    event Withdrawn(address staker, uint256 amount);
+    event RewardPaid(address indexed user, uint256 reward);
+    constructor() Ownable(msg.sender){
         lastTime = block.timestamp;
         s_rewardingToken = new RewardToken();
         s_stakingToken = new StakingToken();
     }
 
-    event staked(address staker, uint256 amount);
-    event withdrawn(address staker, uint256 amount);
-    event paused(bool status);
-
-    function stake() public payable{
+    function stake() public payable whenNotPaused nonReentrant{
         require(isPaused == false, "Contract is paused");
-        uint256 amount = msg.value / token_price;
-        s_stakedBalance[msg.sender] += amount; // add the amount to the staked balance of user
-        stakers.push(msg.sender);
-        emit staked(msg.sender, amount);
+        uint256 amount = msg.value / s_tokenPrice;
+         
+        if (s_stakedBalance[msg.sender] != 0){
+            s_stakedBalance[msg.sender] += amount; // add the amount to the staked balance of user
+        }
+        else{
+            s_stakedBalance[msg.sender] = amount; // set the amount to the staked balance of user
+            s_stakers.push(msg.sender);
+        }
+        emit Staked(msg.sender, amount);
     }
 
 /*I am also transfering rewards points here so that people do not lose 
 the rewards if they call withdraw first and then getReward. */
 
-    function withdraw(uint256 amount) public {
+    function withdraw(uint256 amount) public nonReentrant{
         uint256 userBal = s_stakedBalance[msg.sender]; // doing this here to not call it multiple times
-        require(userBal < amount, "Insufficient balance");
-        uint256 reward_points = (userBal * s_rewardRate) - userBal;
-        payable(address(this)).transfer(amount * token_price); // give back the ether
-        IERC20(s_stakingToken).transfer(msg.sender, amount);
-        IERC20(s_rewardingToken).transfer(msg.sender, reward_points);
-        s_stakedBalance[msg.sender] -= (amount*token_price);  //reducing the taken eth
-        s_totalRewards[msg.sender] = 0;
-        emit withdrawn(msg.sender, amount);
+        require(userBal >= amount, "Insufficient balance");
+        uint256 reward_points = calculateRewards(msg.sender);
+        require(IERC20(s_stakingToken).transfer(msg.sender, amount),"Failed");
+        require(IERC20(s_rewardingToken).transfer(msg.sender, reward_points),"Failed");
+        s_stakedBalance[msg.sender] -= amount; 
+        s_totalRewards[msg.sender] -= reward_points;
+        emit Withdrawn(msg.sender, amount);
     }
 
-    function getReward() public {
-        uint256 userBal = s_stakedBalance[msg.sender]; // doing this here to not call it multiple times
-        require(userBal > 0, "Nothing staked");
-        uint256 reward_points = userBal * s_rewardRate - userBal;
-        IERC20(s_rewardingToken).transfer(msg.sender, reward_points); 
-        s_totalRewards[msg.sender] = 0;
+    function calculateRewards(address person) public view returns(uint256){
+        uint256 userBal = s_stakedBalance[person]; // doing this here to not call it multiple times
+        return ((userBal * s_rewardRate) - userBal);
     }
 
-    modifier onlyOwner(){
-        require(msg.sender == owner, "You are not the owner");
-        _;
+     function allocateRewards() public nonReentrant{
+        uint256 timePassed = block.timestamp - lastTime;
+        require(timePassed >= 1209600 , "Cannot allocate rewards so soon"); // this is 2 weeks btw
+        for(uint256 i=0; i< s_stakers.length; i++){
+            address staker = s_stakers[i];
+            uint256 totalStaked = s_stakedBalance[staker];
+            uint256 totalRewards = (totalStaked * s_rewardRate) / 1e18 ;
+            IERC20(s_rewardingToken).transfer(payable(s_stakers[i]), totalRewards);
+            s_totalRewards[staker] += totalRewards;
+            emit RewardPaid(s_stakers[i], totalRewards);
+        }
+        lastTime = block.timestamp;
     }
 
     function changeRewards(uint256 value) public onlyOwner{
@@ -73,29 +85,19 @@ the rewards if they call withdraw first and then getReward. */
     }
 
     function getStakingAmount() public view returns(uint256){
-        return s_stakedBalance[msg.sender];
+        return s_stakedBalance[msg.sender]; // view the staked amount of a person
     }
     
     function viewReward() public view returns(uint256){
-        return s_totalRewards[msg.sender];
+        return s_totalRewards[msg.sender]; // view the total rewards of a person
+    }
+   
+    function pause() external onlyOwner {
+        _pause();
     }
 
-    function pause() public onlyOwner{
-        isPaused = true;
-        emit paused(isPaused);
-    }
-
-    function allocateRewards() public onlyOwner {
-        uint256 timePassed = block.timestamp - lastTime;
-        require(timePassed >= 1209600 , "Cannot allocate rewards so soon"); // this is 2 weeks btw
-        for(uint256 i=0; i< stakers.length; i++){
-            address staker = stakers[i];
-            uint256 totalStaked = s_stakedBalance[staker];
-            uint256 totalRewards = (totalStaked * s_rewardRate) / 1e18 ;
-            IERC20(s_rewardingToken).transfer(payable(stakers[i]), totalRewards);
-            s_totalRewards[staker] += totalRewards;
-        }
-        lastTime = block.timestamp;
+    function unpause() external onlyOwner {
+        _unpause();
     }
 
     fallback() external payable{
