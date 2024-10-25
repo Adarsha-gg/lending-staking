@@ -19,6 +19,9 @@ finish this :)
 
 1. I need to automatically send rewards to the user after 2 weeks how do I know how much to give them based on the time that they deposited the token. Do I pause the staking and withdrawl for some time and after that time is over give the rewards and then open the time for withdrawing? Or what other ways can we do?
 
+2. Now when the user withdraws a certain amount, his staked time goes to 0. So when he goes out to claim rewards, he can get ALOT more since his staking time is 0. How to fix this?
+    - Make a different time calculator for reward and withdrawn time. WIthdrawn time depends on stake time and reward time is independent.
+
 **Choices**
 1. Made the stake function give out staking tokens because it makes more sense.
 2. Made the withdraw function seprate the rewards functions and only giveout the eth back. (Maybe have to set limit at a single person's withdraw limit per week or smth)

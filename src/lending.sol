@@ -15,6 +15,7 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
         uint256 stakedBalance;
         uint256 totalRewards;
         uint256 stakedTime;
+        uint256 lastClaimedTime;
     }
 
     RewardToken public immutable s_rewardingToken;
@@ -42,21 +43,22 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
         require(isPaused == false, "Contract is paused");
         require(msg.value >= s_tokenPrice, "Insufficient amount");
         uint256 amount = msg.value / s_tokenPrice;
-         
-        if (s_infoStakers[msg.sender].stakedBalance != 0){
+        Staker storage staker = s_infoStakers[msg.sender]; 
+        if (staker.stakedBalance != 0){
             require(IERC20(s_stakingToken).transfer(msg.sender, amount),"Failed"); //stakking token according to eth
-            s_infoStakers[msg.sender].stakedBalance += amount; // add the amount to the staked balance of user
+            staker.stakedBalance += amount; // add the amount to the staked balance of user
+            staker.stakedTime = block.timestamp; // set the time of staking
+
         }
         else{
             require(IERC20(s_stakingToken).transfer(msg.sender, amount),"Failed");
-            s_infoStakers[msg.sender].stakedBalance = amount; // set the amount to the staked balance of user
+            staker.stakedBalance = amount; // set the amount to the staked balance of user
             s_stakers.push(msg.sender);
+            staker.stakedTime = block.timestamp; // set the time of staking
+            staker.lastClaimedTime = block.timestamp; // set the time of last claimed reward
         }
         emit Staked(msg.sender, amount);
     }
-
-/*I am also transfering rewards points here so that people do not lose 
-the rewards if they call withdraw first and then getReward. */
 
     function withdraw(uint256 amount) public whenNotPaused nonReentrant{ //idk if we need the pause or no
         Staker storage staker = s_infoStakers[msg.sender];
@@ -64,15 +66,24 @@ the rewards if they call withdraw first and then getReward. */
         require(staker.stakedTime + 1209600 <= block.timestamp, "Cannot withdraw so soon"); // this is 2 weeks btw  
         uint256 value = amount * s_tokenPrice;
         payable(msg.sender).transfer(value); //transfer the eth to the user
-        // giveBackEth(); //give back the eth to the user 
+        staker.stakedBalance -= amount; // subtract the amount from the staked balance of user
+        staker.stakedTime = block.timestamp; //reset the staked time 
         emit Withdrawn(msg.sender, value);
+    }
+
+    function claimReward() public nonReentrant{
+        uint256 reward = calculateRewards(msg.sender);
+        require(reward > 0, "No rewards to claim");
+        IERC20(s_rewardingToken).transfer(payable(msg.sender), reward);
+        s_infoStakers[msg.sender].totalRewards += reward;
+        emit RewardPaid(msg.sender, reward);
     }
 
     //idk how this function works need to check the math
     function calculateRewards(address person) public returns(uint256){
         Staker storage staker = s_infoStakers[person];
         uint256 userBal = staker.stakedBalance; // doing this here to not call it multiple times
-        uint256 timeSinceLastReward = block.timestamp - staker.stakedTime;
+        uint256 timeSinceLastReward = block.timestamp - staker.lastClaimedTime;
         require(timeSinceLastReward >= 1209600 , "Cannot allocate rewards so soon"); // this is 2 weeks btw
         uint256 annualRewardPercentage = s_rewardRate * 100; 
         uint256 rewardAmount = (userBal * annualRewardPercentage * timeSinceLastReward * 1e18) / 
@@ -80,16 +91,7 @@ the rewards if they call withdraw first and then getReward. */
         if (rewardAmount < 1e16) return 0; // Minimum 0.01 tokens threshold
         rewardAmount = rewardAmount / 1e18;
         if (rewardAmount > userBal) {rewardAmount = userBal;}
-        lastTime = block.timestamp;
         return rewardAmount;   
-    }
-
-    function calimReward() public nonReentrant{
-        uint256 reward = calculateRewards(msg.sender);
-        require(reward > 0, "No rewards to claim");
-        IERC20(s_rewardingToken).transfer(payable(msg.sender), reward);
-        s_infoStakers[msg.sender].totalRewards += reward;
-        emit RewardPaid(msg.sender, reward);
     }
 
     /* USE THIS FUNCTION IF YOU WANT TO ALLOCATE REWARDS TO ALL STAKERS AT ONCE (NEEDS FIXING BTW)*/
