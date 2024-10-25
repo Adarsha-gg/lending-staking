@@ -51,8 +51,34 @@ contract LenderTest is Test{
         vm.warp(12999999); //moving the time forward
         vm.expectRevert();
         lender.withdraw(1000);
-        
     }
 
+    function testClaim() public {
+        vm.prank(USER);
+        lender.stake{value:1 ether}();
+        vm.prank(USER);
+        vm.warp(12999999); //moving the time forward
+        lender.claimReward();
+        /*The following things can be used when testing erc20 tokens */
+        address stake = lender.getStakeAddress();
+        address reward = lender.getRewardAddress();
+        console.log("Staking balance = ", IERC20(stake).balanceOf(USER)); //works now 
+        console.log("Reward balance = ", IERC20(reward).balanceOf(USER));
+    }
+
+    function testClaimAfterWithdraw() public  {
+        vm.prank(USER);
+        lender.stake{value:1 ether}();
+        vm.prank(USER);
+        vm.warp(12999999); //moving the time forward
+        lender.withdraw(1000);
+        vm.expectRevert();
+        lender.claimReward();
+        /*The following things can be used when testing erc20 tokens */
+        address stake = lender.getStakeAddress();
+        address reward = lender.getRewardAddress();
+        console.log("Staking balance = ", IERC20(stake).balanceOf(USER)); //works now 
+        console.log("Reward balance = ", IERC20(reward).balanceOf(USER));
+    }
 
 }
