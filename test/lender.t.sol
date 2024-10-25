@@ -32,8 +32,12 @@ contract LenderTest is Test{
         vm.prank(USER);
         vm.warp(12999999); //moving the time forward
         lender.withdraw(1000);
-        IERC20 token = IERC20((lender.s_stakingToken).address);
-        console.log(token.balanceOf(msg.sender)); //this doesnt work right now btw
+        address token = lender.getStakeAddress();
+        address reward = lender.getRewardAddress();
+        address hero = lender.s_stakingToken
+        console.log(token);
+        console.log(IERC20(token).balanceOf(USER)); //this doesnt work right now btw
+        console.log(IERC20(reward).balanceOf(USER));
     }
 
     function testAfterPause() public { //this test works for both staking and withdrawing

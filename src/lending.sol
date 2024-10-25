@@ -77,6 +77,12 @@ the rewards if they call withdraw first and then getReward. */
         return rewardAmount;   
     }
 
+    function giveBackEth() public {
+        require(s_stakedBalance[msg.sender] > 0) ;
+        payable(msg.sender).transfer(s_stakedBalance[msg.sender] * s_tokenPrice);
+        s_stakedBalance[msg.sender] = 0;
+    }
+
     /* USE THIS FUNCTION IF YOU WANT TO ALLOCATE REWARDS TO ALL STAKERS AT ONCE (NEEDS FIXING BTW)*/
     //  function allocateRewards() public nonReentrant{
     //     uint256 timePassed = block.timestamp - lastTime;
@@ -115,9 +121,19 @@ the rewards if they call withdraw first and then getReward. */
         _unpause();
     }
 
+    function getStakeAddress() public view returns(address){
+        return address(s_stakingToken);
+    }
+
+    function getRewardAddress() public view returns(address){
+        return address(s_rewardingToken);
+    }
+    
     fallback() external payable{
     }
 
     receive() external payable{
     }
+
+
 }
