@@ -32,12 +32,13 @@ contract LenderTest is Test{
         vm.prank(USER);
         vm.warp(12999999); //moving the time forward
         lender.withdraw(1000);
-        address token = lender.getStakeAddress();
-        address reward = lender.getRewardAddress();
-        address hero = lender.s_stakingToken
-        console.log(token);
-        console.log(IERC20(token).balanceOf(USER)); //this doesnt work right now btw
-        console.log(IERC20(reward).balanceOf(USER));
+
+        /*The following things can be used when testing erc20 tokens */
+        // address token = lender.getStakeAddress();
+        // address reward = lender.getRewardAddress();
+        // console.log(token);
+        // console.log(IERC20(token).balanceOf(USER)); //works now 
+        // console.log(IERC20(reward).balanceOf(USER));
     }
 
     function testAfterPause() public { //this test works for both staking and withdrawing
@@ -46,7 +47,6 @@ contract LenderTest is Test{
         vm.prank(address(this));
         vm.expectRevert();
         lender.stake{value:1 ether}();
-
         vm.prank(address(this));
         vm.warp(12999999); //moving the time forward
         vm.expectRevert();
