@@ -30,7 +30,7 @@ finish this :)
 ### TO Do for tommorow
 1. ~~make a func to actually check the balance of the address to see if the ERC20 token is actually transfered. 
 right now the functions transfers (according to the terminal testing interface atleast.)~~
-2. Make the reward function seprate than the withdraw function.  
+2. ~~Make the reward function seprate than the withdraw function.~~  
 
 
 

@@ -65,6 +65,7 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
         require(staker.stakedBalance >= amount, "Insufficient balance");
         require(staker.stakedTime + 1209600 <= block.timestamp, "Cannot withdraw so soon"); // this is 2 weeks btw  
         uint256 value = amount * s_tokenPrice;
+        claimReward();
         payable(msg.sender).transfer(value); //transfer the eth to the user
         staker.stakedBalance -= amount; // subtract the amount from the staked balance of user
         staker.stakedTime = block.timestamp; //reset the staked time 
@@ -80,7 +81,7 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
     }
 
     //idk how this function works need to check the math
-    function calculateRewards(address person) public returns(uint256){
+    function calculateRewards(address person) public view returns(uint256){
         Staker storage staker = s_infoStakers[person];
         uint256 userBal = staker.stakedBalance; // doing this here to not call it multiple times
         uint256 timeSinceLastReward = block.timestamp - staker.lastClaimedTime;
