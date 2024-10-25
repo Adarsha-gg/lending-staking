@@ -65,11 +65,18 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
         require(staker.stakedBalance >= amount, "Insufficient balance");
         require(staker.stakedTime + 1209600 <= block.timestamp, "Cannot withdraw so soon"); // this is 2 weeks btw  
         uint256 value = amount * s_tokenPrice;
-        claimReward();
         payable(msg.sender).transfer(value); //transfer the eth to the user
         staker.stakedBalance -= amount; // subtract the amount from the staked balance of user
         staker.stakedTime = block.timestamp; //reset the staked time 
+        
+        uint256 reward = calculateRewards(msg.sender);
+        require(reward > 0, "No rewards to claim");
+        IERC20(s_rewardingToken).transfer(payable(msg.sender), reward);
+        s_infoStakers[msg.sender].totalRewards += reward;
+        IERC20(s_stakingToken).transfer(payable(msg.sender), reward); //transfer the staking token to the user
+        
         emit Withdrawn(msg.sender, value);
+        emit RewardPaid(msg.sender, reward);
     }
 
     function claimReward() public nonReentrant{
