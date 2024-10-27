@@ -4,7 +4,7 @@
 
 First the user sends some eth to the contract and as per the eth sent, the person gets sent a "Staking token" which is a proof that he has some part in the protocol.
 
-Every 2 weeks they get rewarded with a reward token.
+User can start getting their rewards in 2 weeks. It calculates based on the time that it was staked.
 For now the they cannot withdraw before 2 weeks because if they do they basically do not get any reward.
 
 
@@ -31,12 +31,13 @@ finish this :) soon enough
 4. Rewinded the last decision as if we do that if person withdraws first no rewards :(. (added a diff func for this tho )
 5.  Couldnt use the same function call in another function call as it causes retrancy (basically can call inifinite time to short circuit kind of)
 
+
 ### TO Do for tommorow
 1. ~~make a func to actually check the balance of the address to see if the ERC20 token is actually transfered. 
 right now the functions transfers (according to the terminal testing interface atleast.)~~
 2. ~~Make the reward function seprate than the withdraw function.~~  
 
-3. Maybe start on the frontend now? Learn javascript? 
+3. Maybe start on the frontend now? Learn javascript? **In progress :)**
 
 
 Goodbye :)
