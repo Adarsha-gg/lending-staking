@@ -27,7 +27,6 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
     bool public isPaused = false;
     
     mapping(address => Staker) public s_infoStakers;
-    address[] public s_stakers;
    
     event Staked(address staker, uint256 amount);
     event Withdrawn(address staker, uint256 amount);
@@ -53,7 +52,7 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
         else{
             require(IERC20(s_stakingToken).transfer(msg.sender, amount),"Failed");
             staker.stakedBalance = amount; // set the amount to the staked balance of user
-            s_stakers.push(msg.sender);
+           
             staker.stakedTime = block.timestamp; // set the time of staking
             staker.lastClaimedTime = block.timestamp; // set the time of last claimed reward
         }
@@ -102,21 +101,6 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
         return rewardAmount;   
     }
 
-    /* USE THIS FUNCTION IF YOU WANT TO ALLOCATE REWARDS TO ALL STAKERS AT ONCE (NEEDS FIXING BTW)*/
-    //  function allocateRewards() public nonReentrant{
-    //     uint256 timePassed = block.timestamp - lastTime;
-    //     require(timePassed >= 1209600 , "Cannot allocate rewards so soon"); // this is 2 weeks btw
-    //     for(uint256 i=0; i< s_stakers.length; i++){
-    //         address staker = s_stakers[i];
-    //         uint256 totalStaked = s_stakedBalance[staker];
-    //         uint256 totalRewards = (totalStaked * s_rewardRate) / 1e18 ;
-    //         IERC20(s_rewardingToken).transfer(payable(s_stakers[i]), totalRewards);
-    //         s_totalRewards[staker] += totalRewards;
-    //         emit RewardPaid(s_stakers[i], totalRewards);
-    //     }
-    //     lastTime = block.timestamp;
-    // }
-
     function changeRewards(uint256 value) public onlyOwner{
         s_rewardRate = value; //change the reward rate by owner
     }
@@ -128,11 +112,6 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
     function viewReward() public view returns(uint256){
         return s_infoStakers[msg.sender].totalRewards; // view the total rewards of a person
     }
-    
-    function getStakers() public view returns(uint256){
-        return s_stakers.length; // view the stakers
-    }
-
      function getStakeAddress() public view returns(address){
         return address(s_stakingToken);
     }

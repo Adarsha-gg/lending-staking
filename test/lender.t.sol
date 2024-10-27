@@ -17,8 +17,6 @@ contract LenderTest is Test{
 
     function testStake() public { //test to see if the function works
         lender.stake{value:1 ether}();
-        uint256 a = lender.getStakers();
-        console.log(a);
     }
 
     function testZeroStake() public { //testing with no value 
