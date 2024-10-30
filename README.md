@@ -16,6 +16,10 @@ Withdraw - give rewards and all its staking token back which were in the contrac
 
 finish this :) soon enough
 
+
+First deployed transaction lfg = https://sepolia.etherscan.io/tx/0x6874327be1339df98e6c471dd7495b72b259518b75a913f6c34445340885ce58
+
+
 **Questions**
 
 1. I need to automatically send rewards to the user after 2 weeks how do I know how much to give them based on the time that they deposited the token. Do I pause the staking and withdrawl for some time and after that time is over give the rewards and then open the time for withdrawing? Or what other ways can we do?
