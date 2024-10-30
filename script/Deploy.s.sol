@@ -15,5 +15,6 @@ contract Deploy is Script{
         vm.stopBroadcast();
         return yf;
     }
+    //just pass a different rpc to do it in different chains. Add the rpc to .env ez
 
 }
