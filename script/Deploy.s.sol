@@ -7,12 +7,13 @@ import {Script} from "forge-std/script.sol";
 
 contract Deploy is Script{
     
-    function run() external{
+    function run() external returns(YieldFarming){
         uint private_key = vm.envUint("PRIVATE_KEY");
 
         vm.startBroadcast(private_key); //to deploy using this account
         YieldFarming yf = new YieldFarming(); // make the account which needed to deploy
-        
         vm.stopBroadcast();
+        return yf;
     }
+
 }

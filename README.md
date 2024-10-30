@@ -44,4 +44,9 @@ right now the functions transfers (according to the terminal testing interface a
 3. Maybe start on the frontend now? Learn javascript? **In progress :)**
 
 
+### Current Problems
+1. So since now I have a private key to deploy using deploy script. THe testAfterPause doesnt work since I need to get the address of the private key but I do not know how to get it right now. I cannot convert the private key into its address directly for some reason.
+
+
+
 Goodbye :)

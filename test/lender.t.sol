@@ -6,12 +6,19 @@ import {Test} from "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
 import {YieldFarming} from "../src/lending.sol";
 import {IERC20} from "@openzeppelin/token/ERC20/IERC20.sol";
+import {Deploy} from "../script/Deploy.s.sol";
 
 contract LenderTest is Test{
     address USER = makeAddr("Hello");
     YieldFarming lender;
+    Deploy deployer;
+    uint key = vm.envUint("PRIVATE_KEY");
+    address main = makeAddr(key);
+    
     function setUp() public {
-        lender = new YieldFarming();
+        console.log(address(this));
+        deployer = new Deploy();
+        lender = deployer.run();
         vm.deal(USER, 10000 ether);
     }
 
@@ -38,14 +45,14 @@ contract LenderTest is Test{
         // console.log(IERC20(token).balanceOf(USER)); //works now 
         // console.log(IERC20(reward).balanceOf(USER));
     }
-
+    //since now I have a private key to deploy, I need to prank and use that, but cant seem to do it.
     function testAfterPause() public { //this test works for both staking and withdrawing
-        vm.prank(address(this));
+        vm.prank(main); 
         lender.pause();
-        vm.prank(address(this));
+        vm.prank(main);
         vm.expectRevert();
         lender.stake{value:1 ether}();
-        vm.prank(address(this));
+        vm.prank(main);
         vm.warp(12999999); //moving the time forward
         vm.expectRevert();
         lender.withdraw(1000);
