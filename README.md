@@ -46,6 +46,7 @@ right now the functions transfers (according to the terminal testing interface a
 
 ### Current Problems
 1. So since now I have a private key to deploy using deploy script. THe testAfterPause doesnt work since I need to get the address of the private key but I do not know how to get it right now. I cannot convert the private key into its address directly for some reason.
+    - So I solved this by just adding the public key to the pause fucntion. Seems like there isnt a function to directly change it form a priv key to public key unless u import something. But vm.broadcast(privkey) seems to deploy it using public key easily. Maybe this is a function that I've not found yet?
 
 
 
