@@ -12,11 +12,8 @@ contract LenderTest is Test{
     address USER = makeAddr("Hello");
     YieldFarming lender;
     Deploy deployer;
-    uint key = vm.envUint("PRIVATE_KEY");
-    address main = makeAddr(key);
     
     function setUp() public {
-        console.log(address(this));
         deployer = new Deploy();
         lender = deployer.run();
         vm.deal(USER, 10000 ether);
@@ -45,14 +42,14 @@ contract LenderTest is Test{
         // console.log(IERC20(token).balanceOf(USER)); //works now 
         // console.log(IERC20(reward).balanceOf(USER));
     }
-    //since now I have a private key to deploy, I need to prank and use that, but cant seem to do it.
+    
     function testAfterPause() public { //this test works for both staking and withdrawing
-        vm.prank(main); 
+        vm.prank(0xd78f1216cd75AA99A6E263c04043623A3d1DcA4a); // public key correspending to priv key
         lender.pause();
-        vm.prank(main);
+        vm.prank(USER);
         vm.expectRevert();
         lender.stake{value:1 ether}();
-        vm.prank(main);
+        vm.prank(USER);
         vm.warp(12999999); //moving the time forward
         vm.expectRevert();
         lender.withdraw(1000);
