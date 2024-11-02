@@ -28,6 +28,7 @@ First deployed transaction lfg = https://sepolia.etherscan.io/tx/0x6874327be1339
 2. Now when the user withdraws a certain amount, his staked time goes to 0. So when he goes out to claim rewards, he can get ALOT more since his staking time is 0. How to fix this?
     - Make a different time calculator for reward and withdrawn time. WIthdrawn time depends on stake time and reward time is independent.
 
+
 **Choices**
 1. Made the stake function give out staking tokens because it makes more sense.
 2. Made the withdraw function seprate the rewards functions and only giveout the eth back. (Maybe have to set limit at a single person's withdraw limit per week or smth)
@@ -47,7 +48,8 @@ right now the functions transfers (according to the terminal testing interface a
 ### Current Problems
 1. So since now I have a private key to deploy using deploy script. THe testAfterPause doesnt work since I need to get the address of the private key but I do not know how to get it right now. I cannot convert the private key into its address directly for some reason.
     - So I solved this by hardcoding the public key to the prank of pause fucntion. Seems like there isnt a function to directly change it form a priv key to public key unless u import something. But vm.broadcast(privkey) seems to deploy it using public key easily. Maybe this is a function that I've not found yet?
-
+    
+    - I also learned that public key and address are different. Public key is derived from private key and address is derived from public key. 
 
 
 Goodbye :)
