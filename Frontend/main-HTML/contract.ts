@@ -24,39 +24,33 @@ const account = privateKeyToAccount(privateKey as Hex);
       // });
 
       const hash = "0x6874327be1339df98e6c471dd7495b72b259518b75a913f6c34445340885ce58";
-
-      const clienter = createPublicClient({
-        chain: sepolia,
-        transport: http(process.env.SEPOLIA_RPC)
-      });
+      
 
       const WalletClient = createWalletClient({
         account: account,
         chain: sepolia,
-        transport: http(process.env.SEPOLIA_RPC)
+        transport: http(),
       });
 
+      const clienter = createPublicClient({
+        chain: sepolia,
+        transport: http(),
+      });
 
       const {contractAddress} = await clienter.getTransactionReceipt({hash});
-      console.log(contractAddress);
 
-      const writeContract = getContract({
-        address: contractAddress,
-        abi: contract_abi,
-        // Use a single client type
-        client: clienter
-    });
+      if (contractAddress)
+        {
+          const contract = getContract({
+            address: contractAddress,
+            abi: contract_abi,
+            client: WalletClient,
+          });
+          await contract.write.changeRewards([3]);
 
-      if (contractAddress) {
-       
-        const read = await clienter.readContract({
-          
-          address: contractAddress,
-          abi: contract_abi,
-          functionName: 's_rewardRate',
-        });
+        }
 
-        console.log(read);
-      }
+      
+  
 
 })();
