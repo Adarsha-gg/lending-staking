@@ -56,4 +56,6 @@ right now the functions transfers (according to the terminal testing interface a
 
 2. Foundry/Solidity automatically creates a getter function for any storage variable in the contract. So if you want to get the ABI you could just put the variable name as function as get it as a normal getter.
 
+3. ALWAYS check the config files, there may be subtle things that may interfere with ur code that you'll never know. I found it by scrolling through discord so 🤷🏻‍♂️.
+
 Goodbye :)
