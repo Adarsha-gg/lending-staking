@@ -29,12 +29,12 @@ const account = privateKeyToAccount(privateKey as Hex);
       const WalletClient = createWalletClient({
         account: account,
         chain: sepolia,
-        transport: http(),
+        transport: http(process.env.SEPOLIA_RPC),
       });
 
       const clienter = createPublicClient({
         chain: sepolia,
-        transport: http(),
+        transport: http(process.env.SEPOLIA_RPC),
       });
 
       const {contractAddress} = await clienter.getTransactionReceipt({hash});
