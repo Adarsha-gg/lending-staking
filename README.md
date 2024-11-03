@@ -49,7 +49,11 @@ right now the functions transfers (according to the terminal testing interface a
 1. So since now I have a private key to deploy using deploy script. THe testAfterPause doesnt work since I need to get the address of the private key but I do not know how to get it right now. I cannot convert the private key into its address directly for some reason.
     - So I solved this by hardcoding the public key to the prank of pause fucntion. Seems like there isnt a function to directly change it form a priv key to public key unless u import something. But vm.broadcast(privkey) seems to deploy it using public key easily. Maybe this is a function that I've not found yet?
     
-    - I also learned that public key and address are different. Public key is derived from private key and address is derived from public key. 
 
+
+### Discoveries
+1. I also learned that public key and address are different. Public key is derived from private key and address is derived from public key. 
+
+2. Foundry/Solidity automatically creates a getter function for any storage variable in the contract. So if you want to get the ABI you could just put the variable name as function as get it as a normal getter.
 
 Goodbye :)
