@@ -43,6 +43,7 @@ right now the functions transfers (according to the terminal testing interface a
 2. ~~Make the reward function seprate than the withdraw function.~~  
 
 3. Maybe start on the frontend now? Learn javascript? **In progress :)**
+ I AM DEF NOT MADE FOR FRONTEND
 
 
 ### Current Problems
