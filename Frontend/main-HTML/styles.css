@@ -7,3 +7,20 @@ img{
     align-items: center;
     margin-left: 10px;    
 }
+
+button {
+    padding: 10px 20px;
+    margin: 5px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.info {
+    margin: 20px 0;
+    padding: 10px;
+    background: #f0f0f0;
+}

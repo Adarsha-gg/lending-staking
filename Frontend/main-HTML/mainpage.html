@@ -2,24 +2,7 @@
 <html>
 <head>
     <title>Simple Staking DApp</title>
-    <!-- Load ethers.js before our script -->
-    <script src="https://cdn.ethers.io/lib/ethers-5.2.esm.min.j" type="application/javascript"></script>
-    <style>
-        .container {
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-        button {
-            padding: 10px 20px;
-            margin: 5px;
-        }
-        .info {
-            margin: 20px 0;
-            padding: 10px;
-            background: #f0f0f0;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
@@ -28,13 +11,12 @@
 
         <div id="stakingControls" style="display: none;">
             <input type="number" id="stakeAmount" placeholder="Amount to stake">
-            <button id="stakeButton">Stake</button>
+            <button id="stakeButton" onclick="stake()">Stake</button>
             <button id="withdrawButton">Withdraw</button>
             <div class="info" id="stakingInfo">Staked: 0</div>
         </div>
     </div>
 
-    <!-- Load our script file after the HTML elements are defined -->
-    <script src="app.js"></script>
+    <script src="main.ts"></script>
 </body>
 </html>

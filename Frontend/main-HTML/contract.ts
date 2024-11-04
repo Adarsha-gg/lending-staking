@@ -25,6 +25,7 @@ const account = privateKeyToAccount(privateKey as Hex);
       });
 
       const {contractAddress} = await clienter.getTransactionReceipt({hash});
+      console.log(contractAddress);
 
       if (contractAddress)
         {
