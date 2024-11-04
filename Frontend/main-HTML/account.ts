@@ -6,8 +6,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const privateKey = process.env.PRIVATE_KEY;
-
-// Assert that privateKey is in the correct format
 const account = privateKeyToAccount(privateKey as Hex);
 
 (async () => {

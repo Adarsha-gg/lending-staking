@@ -7,25 +7,12 @@ import yielder from "../../out/lending.sol/YieldFarming.json";
 
 dotenv.config();
 const contract_abi = yielder["abi"];
-
 const privateKey = process.env.PRIVATE_KEY;
-
-// Assert that privateKey is in the correct format
 const account = privateKeyToAccount(privateKey as Hex);
 
 (async () => {
-    
-
-      //I can use this but already deployed so no need. Just keeping it for reference
-      // const contract_hash = await WalletClient.deployContract({
-      //   abi: custom.abi,
-      //   bytecode: custom.bytecode,
-      //   args: [1000]
-      // });
-
       const hash = "0x6874327be1339df98e6c471dd7495b72b259518b75a913f6c34445340885ce58";
-      
-
+  
       const WalletClient = createWalletClient({
         account: account,
         chain: sepolia,
@@ -49,8 +36,4 @@ const account = privateKeyToAccount(privateKey as Hex);
           await contract.write.changeRewards([3]);
 
         }
-
-      
-  
-
 })();
