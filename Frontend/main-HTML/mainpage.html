@@ -3,20 +3,23 @@
 <head>
     <title>Simple Staking DApp</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="dist/main.js"></script>
 </head>
 <body>
     <div class="container">
-        <button id="connectButton">Connect Wallet</button>
+        <button id="connectButton" >Connect Wallet</button>
         <div class="info" id="walletInfo">Not connected</div>
 
-        <div id="stakingControls" style="display: none;">
+        <div id="stakingControls" >
             <input type="number" id="stakeAmount" placeholder="Amount to stake">
-            <button id="stakeButton" onclick="stake()">Stake</button>
+            <button id="stakeButton">Stake</button>
+
+            <input type="number" id="withdrawAmount" placeholder="Amount to withdraw">
             <button id="withdrawButton">Withdraw</button>
+
+            <button id="claimButton">Claim</button>
             <div class="info" id="stakingInfo">Staked: 0</div>
         </div>
     </div>
-
-    <script src="main.ts"></script>
 </body>
 </html>
