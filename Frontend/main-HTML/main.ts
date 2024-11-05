@@ -12,19 +12,19 @@ let WalletClient: any;
 
 async function connect()
 {
-    // WalletClient = createWalletClient({
-    //     chain: sepolia,
-    //     transport: custom(window.ethereum!)
-    //   });
+    WalletClient = createWalletClient({
+        chain: sepolia,
+        transport: custom(window.ethereum!)
+      });
     
-    // const address = WalletClient.requestAddresses();
-    // console.log(address);
+    const address = WalletClient.requestAddresses();
+    console.log(address);
 
-    // contract = getContract({
-    //     address: '0x30f6b15c7f964237b41f066b0a5cb5117d4fad9d',
-    //     abi: contract_abi,
-    //     client: WalletClient, // or walletClient,
-    // });  
+    contract = getContract({
+        address: '0x30f6b15c7f964237b41f066b0a5cb5117d4fad9d',
+        abi: contract_abi,
+        client: WalletClient, // or walletClient,
+    });  
     console.log("Clcikerkerkekrer");
     
 }
