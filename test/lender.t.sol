@@ -12,14 +12,12 @@ contract LenderTest is Test{
     address USER = makeAddr("Hello");
     YieldFarming lender;
     Deploy deployer;
-    AggregatorV3Interface priceFeed;
-    address constant sepoliaEthUsdPriceFeed= 0x694AA1769357215DE4FAC081bf1f309aDC325306;
 
     function setUp() public {
         deployer = new Deploy();
         lender = deployer.run();
         vm.deal(USER, 10000 ether);
-        priceFeed = AggregatorV3Interface(sepoliaEthUsdPriceFeed);
+        
     }
 
     function testStake() public { //test to see if the function works
@@ -87,7 +85,7 @@ contract LenderTest is Test{
     }
 
     function testPrice() public {
-        (, int256 price, , , ) = priceFeed.latestRoundData();
+        int256 price = lender.pricer();
         console.log("hlo", price);
     }
 

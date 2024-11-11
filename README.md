@@ -61,4 +61,5 @@ right now the functions transfers (according to the terminal testing interface a
 
 3. ALWAYS check the config files, there may be subtle things that may interfere with ur code that you'll never know. I found it by scrolling through discord so 🤷🏻‍♂️.
 
+4. Learned that we need to pass RPC_URL even in the test to get any kind of real data, always deploying to sepolia and then quering it is bad practice
 Goodbye :)
