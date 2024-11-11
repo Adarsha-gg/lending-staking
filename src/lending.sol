@@ -106,6 +106,15 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
         s_rewardRate = value; //change the reward rate by owner
     }
 
+    function pricer() public view returns (int256){
+       AggregatorV3Interface dataFeed = AggregatorV3Interface(
+            0x694AA1769357215DE4FAC081bf1f309aDC325306 // for sepolia testnet
+        );
+        (, int256 answer, , ,) = dataFeed.latestRoundData();
+        answer = answer/ (10**8); // it gives some random hex number so 🤷🏻‍♂️
+        return answer;
+    }
+
     function getStakingAmount() public view returns(uint256){
         return s_infoStakers[msg.sender].stakedBalance; // view the staked amount of a person
     }
@@ -113,6 +122,7 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
     function viewReward() public view returns(uint256){
         return s_infoStakers[msg.sender].totalRewards; // view the total rewards of a person
     }
+    
      function getStakeAddress() public view returns(address){
         return address(s_stakingToken);
     }
@@ -127,16 +137,6 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
 
     function unpause() external onlyOwner {
         _unpause();
-    }
-
-    function pricer() public view returns (int256){
-       AggregatorV3Interface dataFeed = AggregatorV3Interface(
-            0x694AA1769357215DE4FAC081bf1f309aDC325306 // for sepolia testnet
-        );
-        
-        (, int256 answer, , ,) = dataFeed.latestRoundData();
-        answer = answer/ (10**8);
-        return answer;
     }
 
     fallback() external payable{
