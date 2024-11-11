@@ -6,16 +6,20 @@ import {console} from "forge-std/console.sol";
 import {YieldFarming} from "../src/lending.sol";
 import {IERC20} from "@openzeppelin/token/ERC20/IERC20.sol";
 import {Deploy} from "../script/Deploy.s.sol";
+import {AggregatorV3Interface} from "@chainlink/lib/chainlink-brownie-contracts/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 contract LenderTest is Test{
     address USER = makeAddr("Hello");
     YieldFarming lender;
     Deploy deployer;
-    
+    AggregatorV3Interface priceFeed;
+    address constant sepoliaEthUsdPriceFeed= 0x694AA1769357215DE4FAC081bf1f309aDC325306;
+
     function setUp() public {
         deployer = new Deploy();
         lender = deployer.run();
         vm.deal(USER, 10000 ether);
+        priceFeed = AggregatorV3Interface(sepoliaEthUsdPriceFeed);
     }
 
     function testStake() public { //test to see if the function works
@@ -80,6 +84,11 @@ contract LenderTest is Test{
         address reward = lender.getRewardAddress();
         console.log("Staking balance = ", IERC20(stake).balanceOf(USER)); //works now 
         console.log("Reward balance = ", IERC20(reward).balanceOf(USER));
+    }
+
+    function testPrice() public {
+        (, int256 price, , , ) = priceFeed.latestRoundData();
+        console.log("hlo", price);
     }
 
 }
