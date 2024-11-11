@@ -8,6 +8,7 @@ import {Pausable} from "@openzeppelin/utils/Pausable.sol";
 import {Ownable} from "@openzeppelin/access/Ownable.sol";
 import {RewardToken} from "./RewardToken.sol";
 import {StakingToken} from "./StakingToken.sol";
+import {AggregatorV3Interface} from "@chainlink/lib/chainlink-brownie-contracts/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
 
@@ -126,6 +127,16 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
 
     function unpause() external onlyOwner {
         _unpause();
+    }
+
+    function pricer() public view returns (int256){
+       AggregatorV3Interface dataFeed = AggregatorV3Interface(
+            0x694AA1769357215DE4FAC081bf1f309aDC325306 // for sepolia testnet
+        );
+        
+        (, int256 answer, , ,) = dataFeed.latestRoundData();
+        answer = answer/ (10**8);
+        return answer;
     }
 
     fallback() external payable{
