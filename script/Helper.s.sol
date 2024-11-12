@@ -3,6 +3,7 @@
 pragma solidity ^0.8.0;
 
 import {Script} from "forge-std/script.sol";
+import {MockV3Aggregator} from "test/mock.t.sol";
 
 contract Helper is Script{
 
@@ -48,7 +49,18 @@ contract Helper is Script{
         return polygon;
     }
 
-    function getAnvil() public pure returns(NetworkConfig memory){
+    function getAnvil() public returns(NetworkConfig memory){
+        if (active.priceFeed != address(0)){
+            return active; // basically if already set return the same thing why use anvil
+        }
+        vm.startBroadcast();
+        MockV3Aggregator mockPriceFeed = new MockV3Aggregator(8, 1000e8);
+        vm.stopBroadcast();
+        NetworkConfig memory anvil = NetworkConfig({
+            priceFeed:address(mockPriceFeed)
+        });
+        return anvil;
+
     }
 
 }
