@@ -32,3 +32,5 @@
 
 4. Learned that we need to pass RPC_URL even in the test to get any kind of real data, always deploying to sepolia and then quering it is bad practice
 Goodbye :)
+
+5. Time wrap doesnt increase the time by the time you mention. It sets the blocktimestamp to be that. So it was working for anvil as my timestamp is 0 and then if we wrap to like 1300000 or 2 weeks + smth it works. But for it to test on sepolia, that didnt work as the blocktimestamp there is already too high than that. Insane stuff. 
