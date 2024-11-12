@@ -33,7 +33,7 @@ contract LenderTest is Test{
         vm.prank(USER);
         lender.stake{value:1 ether}();
         vm.prank(USER);
-        vm.warp(12999999); //moving the time forward
+        vm.warp(140000000000); //moving the time forward
         lender.withdraw(1000);
 
         /*The following things can be used when testing erc20 tokens */
@@ -51,7 +51,7 @@ contract LenderTest is Test{
         vm.expectRevert();
         lender.stake{value:1 ether}();
         vm.prank(USER);
-        vm.warp(12999999); //moving the time forward
+        vm.warp(140000000000); //moving the time forward
         vm.expectRevert();
         lender.withdraw(1000);
     }
@@ -60,7 +60,7 @@ contract LenderTest is Test{
         vm.prank(USER);
         lender.stake{value:1 ether}();
         vm.prank(USER);
-        vm.warp(12999999); //moving the time forward
+        vm.warp(140000000000); //moving the time forward
         lender.claimReward();
         /*The following things can be used when testing erc20 tokens */
         address stake = lender.getStakeAddress();
@@ -73,7 +73,7 @@ contract LenderTest is Test{
         vm.prank(USER);
         lender.stake{value:1 ether}();
         vm.prank(USER);
-        vm.warp(12999999); //moving the time forward
+        vm.warp(140000000000); //moving the time forward
         lender.withdraw(1000);
         vm.expectRevert();
         lender.claimReward();
@@ -84,9 +84,10 @@ contract LenderTest is Test{
         console.log("Reward balance = ", IERC20(reward).balanceOf(USER));
     }
 
-    function testPrice() public {
+    function testPrice() public view {
         int256 price = lender.pricer();
         console.log("hlo", price);
+        console.log(block.timestamp);
     }
 
 }

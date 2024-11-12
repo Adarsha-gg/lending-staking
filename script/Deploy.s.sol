@@ -15,6 +15,12 @@ contract Deploy is Script{
         vm.stopBroadcast();
         return yf;
     }
+
+    // function selectChain() public {
+    //     if (vm.rpc){
+    //         address rpc = vm.rpc;
+    //     }
+    // }
     //just pass a different rpc to do it in different chains. Add the rpc to .env ez
 
 }
