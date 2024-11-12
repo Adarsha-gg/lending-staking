@@ -4,12 +4,7 @@ pragma solidity ^0.8.0;
 import {AggregatorV3Interface} from "lib/foundry-chainlink-toolkit/lib/chainlink-brownie-contracts/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 /**
- * @title MockV3Aggregator
- * @notice Based on the FluxAggregator contract
- * @notice Use this contract when you need to test
- * other contract's ability to read data from an
- * aggregator contract, but how the aggregator got
- * its answer is unimportant
+ copy pasted from patrick collins video to get chainlink aggregator cuz Idk how to make this
  */
 contract MockV3Aggregator is AggregatorV3Interface {
     uint256 public constant version = 4;
