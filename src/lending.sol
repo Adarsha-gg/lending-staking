@@ -22,6 +22,7 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
     RewardToken public immutable s_rewardingToken;
     StakingToken public immutable s_stakingToken;
     uint256 public immutable s_tokenPrice = 1e14;
+    AggregatorV3Interface immutable dataFeed; // A contract per chain? IG
     
     uint256 public lastTime;
     uint256 public s_rewardRate = 2;
@@ -33,10 +34,12 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
     event Withdrawn(address staker, uint256 amount);
     event RewardPaid(address indexed user, uint256 reward);
 
-    constructor() Ownable(msg.sender){
+    constructor(address chainid) Ownable(msg.sender){
         lastTime = block.timestamp;
         s_rewardingToken = new RewardToken();
         s_stakingToken = new StakingToken();
+        dataFeed = AggregatorV3Interface(chainid); // for sepolia testnet
+            
     }
 
     function stake() public payable whenNotPaused nonReentrant{
@@ -106,10 +109,9 @@ contract YieldFarming is Ownable, Pausable, ReentrancyGuard{
         s_rewardRate = value; //change the reward rate by owner
     }
 
+    // function eth_price 
+
     function pricer() public view returns (int256){
-       AggregatorV3Interface dataFeed = AggregatorV3Interface(
-            0x694AA1769357215DE4FAC081bf1f309aDC325306 // for sepolia testnet
-        );
         (, int256 answer, , ,) = dataFeed.latestRoundData();
         answer = answer/ (10**8); // it gives some random hex number so 🤷🏻‍♂️
         return answer;
