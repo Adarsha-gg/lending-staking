@@ -30,7 +30,7 @@ right now the functions transfers (according to the terminal testing interface a
 
 4. ~~Since I cant do frontend lets add the value of ether according to usd. so its get better kind of~~
 
-5. The tests are all written to check in my own enviornmnet. Maybe make different tests for real testing and mock testing inside foundry?
+5. ~~The tests are all written to check in my own enviornmnet. Maybe make different tests for real testing and mock testing inside foundry?~~ Updated the same file to work
 
 
 
